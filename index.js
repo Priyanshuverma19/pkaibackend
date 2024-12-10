@@ -17,7 +17,13 @@ const app = express();
 //     credentials:true,
 
 // }))
-app.options("*", cors({ origin: process.env.CLIENT_URL, credentials: true })); // Handle preflight
+// app.use("*", cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
 
 app.use(express.json())
 const connect = async ()=>{
@@ -84,18 +90,44 @@ app.post("/api/chats",ClerkExpressRequireAuth(),async(req,res)=>{
     res.status(500).send("Error creating chats!")
    }
 });
+// app.get("/api/userchats", ClerkExpressRequireAuth(), async (req, res) => {
+//     const userId = req.auth.userId;
+  
+//     try {
+//       const userChats = await userchats.find({ userId });
+  
+//       res.status(200).send(userChats[0].chats);
+//       console.log(userChats)
+//     } catch (err) {
+//       console.log(err);
+//       res.status(500).send("Error fetching userchats!");
+//     }
+//   });
+
 app.get("/api/userchats", ClerkExpressRequireAuth(), async (req, res) => {
-    const userId = req.auth.userId;
-  
-    try {
-      const userChats = await userchats.find({ userId });
-  
-      res.status(200).send(userChats[0].chats);
-    } catch (err) {
-      console.log(err);
-      res.status(500).send("Error fetching userchats!");
+  const userId = req.auth.userId;
+
+  try {
+    const userChats = await userchats.find({ userId });
+
+    // Handle the case where no chats are found
+    if (!userChats || userChats.length === 0) {
+      console.log("No chats found for user:", userId);
+      return res.status(404).json({ error: "No chats found for this user!" });
     }
-  });
+
+    // Validate the structure of the first item in the array
+    if (!userChats[0].chats) {
+      console.log("Chats property is missing in the database record:", userChats[0]);
+      return res.status(500).json({ error: "Chats data is missing!" });
+    }
+
+    res.status(200).json(userChats[0].chats);
+  } catch (err) {
+    console.error("Error fetching userchats:", err);
+    res.status(500).json({ error: "Error fetching userchats!" });
+  }
+});
 
   app.get("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
