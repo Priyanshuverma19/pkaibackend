@@ -1,6 +1,65 @@
 {
     "version": 2,
-    "name": "pkaibackend",
-    "builds": [{ "src": "index.js", "use": "@vercel/node" }],
-    "routes": [{ "src": "/(.*)", "dest": "/index.js" }]
+    "builds": [
+      {
+        "src": "api/**/*.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "dist/**/*",
+        "use": "@vercel/static"
+      }
+    ],
+    "routes": [
+      {
+        "src": "^/api/(.*)",
+        "dest": "/api/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/index.html"
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/dashboard(.*)",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/dashboard/chats/:id",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/sign-in(.*)",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/sign-up(.*)",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/explore",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/api/(.*)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET, POST, PUT, DELETE, OPTIONS"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "X-Requested-With, Content-Type, Authorization"
+          }
+        ]
+      }
+    ]
   }
+  
