@@ -2,12 +2,12 @@
     "version": 2,
     "builds": [
       {
-        "src": "api/**/*.js",
-        "use": "@vercel/node"
-      },
-      {
         "src": "dist/**/*",
         "use": "@vercel/static"
+      },
+      {
+        "src": "api/**/*.js",
+        "use": "@vercel/node"
       }
     ],
     "routes": [
@@ -18,47 +18,6 @@
       {
         "src": "/(.*)",
         "dest": "/index.html"
-      }
-    ],
-    "rewrites": [
-      {
-        "source": "/dashboard(.*)",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/dashboard/chats/:id",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/sign-in(.*)",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/sign-up(.*)",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/explore",
-        "destination": "/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "/api/(.*)",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          },
-          {
-            "key": "Access-Control-Allow-Methods",
-            "value": "GET, POST, PUT, DELETE, OPTIONS"
-          },
-          {
-            "key": "Access-Control-Allow-Headers",
-            "value": "X-Requested-With, Content-Type, Authorization"
-          }
-        ]
       }
     ]
   }
