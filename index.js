@@ -17,6 +17,7 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
+    allowedHeaders: ["Authorization", "Content-Type"],
   })
 );
 app.use(express.json());
@@ -79,6 +80,7 @@ app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
 
 // Get user chats
 app.get("/api/userchats", ClerkExpressRequireAuth(), async (req, res) => {
+  console.log("Authenticated User ID:", req.auth.userId);
   const userId = req.auth.userId;
   try {
     const userChats = await userchats.find({ userId });
